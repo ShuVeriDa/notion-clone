@@ -36,7 +36,7 @@ const DocumentsPage: NextPage<IDocumentsPageProps> = () => {
              width={300}
       />
       <h2 className="text-lg font-medium">
-        Marşa voġiyla {user?.firstName}i Yozan çu
+        Marşa voġiyla {user?.firstName}i Yozaŋ çu
       </h2>
       <Button onClick={onCreate}>
         <PlusCircle className={"h-4 w-4 mr-2"}/>
