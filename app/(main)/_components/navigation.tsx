@@ -8,6 +8,7 @@ import {useMutation, useQuery} from "convex/react";
 import {api} from "@/convex/_generated/api";
 import {Item} from "@/app/(main)/_components/item";
 import {toast} from "sonner";
+import {DocumentList} from "@/app/(main)/_components/document-list";
 
 interface INavigationProps {
 }
@@ -15,7 +16,6 @@ interface INavigationProps {
 export const Navigation: FC<INavigationProps> = () => {
   const pathname = usePathname()
   const isMobile = useMediaQuery("(max-width: 768px)")
-  const documents = useQuery(api.documents.get)
   const create = useMutation(api.documents.create)
 
   const isResizingRef = useRef(false)
@@ -142,13 +142,7 @@ export const Navigation: FC<INavigationProps> = () => {
           />
         </div>
         <div className="mt-4">
-          {documents?.map((document) => {
-            return (
-              <p key={document._id}>
-                {document.title}
-              </p>
-            )
-          })}
+          <DocumentList />
         </div>
         <div onMouseDown={handleMouseDown}
              onClick={resetWidth}
