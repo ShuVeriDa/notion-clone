@@ -12,11 +12,13 @@ import {DocumentList} from "@/app/(main)/_components/document-list";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import {TrashBox} from "@/app/(main)/_components/trash-box";
 import {useSearch} from "@/hooks/use-search";
+import {useSettings} from "@/hooks/use-settings";
 
 interface INavigationProps {
 }
 
 export const Navigation: FC<INavigationProps> = () => {
+  const {onOpen} = useSettings()
   const search = useSearch()
   const pathname = usePathname()
   const isMobile = useMediaQuery("(max-width: 768px)")
@@ -136,8 +138,7 @@ export const Navigation: FC<INavigationProps> = () => {
                 label={"Search"}
                 isSearch
           />
-          <Item onClick={() => {
-          }}
+          <Item onClick={onOpen}
                 icon={Settings}
                 label={"Settings"}
           />
