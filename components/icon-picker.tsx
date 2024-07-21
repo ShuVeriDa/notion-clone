@@ -37,6 +37,7 @@ export const IconPicker: FC<IIconPickerProps> = (
         <EmojiPicker height={350}
                      theme={theme}
                      onEmojiClick={(data) => onChange(data.emoji)}
+                     emojiStyle={EmojiStyle.APPLE}
         />
       </PopoverContent>
     </Popover>
