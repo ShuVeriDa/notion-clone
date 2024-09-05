@@ -1,23 +1,31 @@
-import {ChevronDown, ChevronRight, LucideIcon, MoreHorizontal, Plus, Trash} from "lucide-react";
-import {Id} from "@/convex/_generated/dataModel";
-import {cn} from "@/lib/utils";
-import {Skeleton} from "@/components/ui/skeleton";
-import {useMutation} from "convex/react";
-import {api} from "@/convex/_generated/api";
-import exp from "node:constants";
-import {useRouter} from "next/navigation";
-import {toast} from "sonner";
+import {MouseEvent} from "react"
+
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
-import {useUser} from "@clerk/shared/react";
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import {Skeleton} from '@/components/ui/skeleton'
+import {api} from '@/convex/_generated/api'
+import {Id} from '@/convex/_generated/dataModel'
+import {cn} from '@/lib/utils'
+import {useUser} from '@clerk/shared/react'
+import {useMutation} from 'convex/react'
+import {
+  ChevronDown,
+  ChevronRight,
+  LucideIcon,
+  MoreHorizontal,
+  Plus,
+  Trash,
+} from 'lucide-react'
+import {useRouter} from 'next/navigation'
+import {toast} from 'sonner'
 
 interface IItemProps {
-  id?: Id<"documents">
+  id?: Id<'documents'>
   documentIcon?: string
   active?: boolean
   expanded?: boolean
@@ -29,159 +37,158 @@ interface IItemProps {
   icon: LucideIcon
 }
 
-export const Item = (
-  {
-    id,
-    active,
-    expanded,
-    level = 0,
-    onExpand,
-    isSearch,
-    documentIcon,
-    icon: Icon,
-    label,
-    onClick
-  }: IItemProps
-) => {
+export const Item = ({
+                       id,
+                       active,
+                       expanded,
+                       level = 0,
+                       onExpand,
+                       isSearch,
+                       documentIcon,
+                       icon: Icon,
+                       label,
+                       onClick,
+                     }: IItemProps) => {
   const {user} = useUser()
-  const router = useRouter()
+  const {push} = useRouter()
   const create = useMutation(api.documents.create)
   const archive = useMutation(api.documents.archive)
 
-  const onArchive = (
-    event: MouseEvent<HTMLDivElement, MouseEvent>
-  ) => {
+  const onArchive = (event: MouseEvent<HTMLDivElement, MouseEvent>) => {
     event.stopPropagation()
 
     if (!id) return
-    const promise = archive({id})
+    const promise = archive({id}).then(documentId => push(`/documents`))
 
     toast.promise(promise, {
-      loading: "Nexaş yuq̇a djadöduş du...",
-      success: "Yoza nexaş yuq̇a qössina!",
-      error: "Arxiveẋ latta daŋ ätto ca bälla."
+      loading: 'Nexaş yuq̇a djadöduş du...',
+      success: 'Yoza nexaş yuq̇a qössina!',
+      error: 'Arxiveẋ latta daŋ ätto ca bälla.',
     })
   }
 
-  const handleExpand = (
-    event: MouseEvent<HTMLDivElement, MouseEvent>
-  ) => {
+  const handleExpand = (event: MouseEvent<HTMLDivElement, MouseEvent>) => {
     event.stopPropagation()
     onExpand?.()
   }
 
-  const onCreate = (
-    event: MouseEvent<HTMLDivElement, MouseEvent>
-  ) => {
+  const onCreate = (event: MouseEvent<HTMLDivElement, MouseEvent>) => {
     event.stopPropagation()
 
     if (!id) return
 
-    const promise = create({title: "Untitled", parentDocument: id})
-      .then((documentId) => {
+    const promise = create({title: 'Untitled', parentDocument: id}).then(
+      documentId => {
         if (!expanded) {
           onExpand?.()
         }
-        // router.push(`/documents/${documentId}`)
-      })
+        push(`/documents/${documentId}`)
+      }
+    )
 
     toast.promise(promise, {
-      loading: "Kerla yoza deş du...",
-      success: "Kerla yosa dina!",
-      error: "Kerla yoza daŋ ätto ca bälla."
+      loading: 'Kerla yoza deş du...',
+      success: 'Kerla yosa dina!',
+      error: 'Kerla yoza daŋ ätto ca bälla.',
     })
   }
 
   const ChevronIcon = expanded ? ChevronDown : ChevronRight
 
   return (
-    <div onClick={onClick}
-         role={"button"}
-         style={{
-           paddingLeft: level ? `${(level * 12) + 12}px` : "12px"
-         }}
-         className={cn(
-           "group min-h-[27px] text-sm py-1 pr-3 w-full hover:bg-primary/5 flex items-center text-muted-foreground font-medium",
-           active && "bg-primary/5 text-primary"
-         )}
+    <div
+      onClick={onClick}
+      role={'button'}
+      style={{
+        paddingLeft: level ? `${level * 12 + 12}px` : '12px',
+      }}
+      className={cn(
+        'group min-h-[27px] text-sm py-1 pr-3 w-full hover:bg-primary/5 flex items-center text-muted-foreground font-medium',
+        active && 'bg-primary/5 text-primary'
+      )}
     >
       {!!id && (
-        <div role={"button"}
-             className={"h-full rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600 mr-1"}
-             onClick={handleExpand}
+        <div
+          role={'button'}
+          className={
+            'h-full rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600 mr-1'
+          }
+          onClick={handleExpand}
         >
-          <ChevronIcon className={"h-4 w-4 shrink-0 text-muted-foreground/50"}/>
+          <ChevronIcon
+            className={'h-4 w-4 shrink-0 text-muted-foreground/50'}
+          />
         </div>
       )}
-      {documentIcon
-        ? <div className={"shrink-0 mr-2 text-[18px]"}>
-          {documentIcon}
-        </div> : <Icon className={"shrink-0 h-[18px] mr-2 text-muted-foreground"}/>
-      }
-      <span className={"truncate"}>
-        {label}
-      </span>
+      {documentIcon ? (
+        <div className={'shrink-0 mr-2 text-[18px]'}>{documentIcon}</div>
+      ) : (
+        <Icon className={'shrink-0 h-[18px] mr-2 text-muted-foreground'}/>
+      )}
+      <span className={'truncate'}>{label}</span>
       {isSearch && (
-        <kbd className={"ml-auto pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border " +
-          "bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100"
-        }>
-          <span className={"text-xs"}>CTRL</span>K
+        <kbd
+          className={
+            'ml-auto pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border ' +
+            'bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100'
+          }
+        >
+          <span className={'text-xs'}>CTRL</span>K
         </kbd>
       )}
       {!!id && (
-        <div
-          className="ml-auto flex items-center gap-x-2"
-        >
+        <div className='ml-auto flex items-center gap-x-2'>
           <DropdownMenu>
-            <DropdownMenuTrigger asChild
-                                 onClick={(e) => e.stopPropagation()}
-            >
-              <div role={"button"}
-                   className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600"
+            <DropdownMenuTrigger asChild onClick={e => e.stopPropagation()}>
+              <div
+                role={'button'}
+                className='opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600'
               >
-                <MoreHorizontal className={"h-4 w-4 text-muted-foreground"}/>
+                <MoreHorizontal className={'h-4 w-4 text-muted-foreground'}/>
               </div>
-
             </DropdownMenuTrigger>
-            <DropdownMenuContent className={"w-60"}
-                                 align={"start"}
-                                 side={"right"}
-                                 forceMount
+            <DropdownMenuContent
+              className={'w-60'}
+              align={'start'}
+              side={'right'}
+              forceMount
             >
-              <DropdownMenuItem onClick={onArchive}
-                                className={"cursor-pointer"}
+              <DropdownMenuItem
+                onClick={onArchive}
+                className={'cursor-pointer'}
               >
-                <Trash className={"h-4 w-4 mr-2"}/>
+                <Trash className={'h-4 w-4 mr-2'}/>
                 Delete
               </DropdownMenuItem>
               <DropdownMenuSeparator/>
-              <div className={"text-xs text-muted-foreground p-2"}>
+              <div className={'text-xs text-muted-foreground p-2'}>
                 Last edited by: {user?.fullName}
               </div>
             </DropdownMenuContent>
           </DropdownMenu>
-          <div role={"button"}
-               onClick={onCreate}
-               className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600"
+          <div
+            role={'button'}
+            onClick={onCreate}
+            className='opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600'
           >
-            <Plus className={"h-4 w-4 text-muted-foreground"}/>
+            <Plus className={'h-4 w-4 text-muted-foreground'}/>
           </div>
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
 Item.Skeleton = function ItemSkeleton({level}: { level?: number }) {
   return (
     <div
       style={{
-        paddingLeft: level ? `${(level * 12) + 12}px` : "12px",
+        paddingLeft: level ? `${level * 12 + 12}px` : '12px',
       }}
-      className={"flex gap-x-2 py-[3px]"}
+      className={'flex gap-x-2 py-[3px]'}
     >
-      <Skeleton className={"h-4 w-4"}/>
-      <Skeleton className={"h-4 w-[30%]"}/>
+      <Skeleton className={'h-4 w-4'}/>
+      <Skeleton className={'h-4 w-[30%]'}/>
     </div>
   )
 }

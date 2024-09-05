@@ -1,7 +1,7 @@
 import {ElementRef, FC, useRef, useState, MouseEvent, useEffect} from 'react';
 import {ChevronsLeft, MenuIcon, Plus, PlusCircle, Search, Settings, Trash} from "lucide-react";
 import {useMediaQuery} from "usehooks-ts";
-import {useParams, usePathname} from "next/navigation";
+import {useParams, usePathname, useRouter} from "next/navigation";
 import {cn} from "@/lib/utils";
 import {UserItem} from "@/app/(main)/_components/user-item";
 import {useMutation, useQuery} from "convex/react";
@@ -20,6 +20,7 @@ interface INavigationProps {
 
 export const Navigation: FC<INavigationProps> = () => {
   const {onOpen} = useSettings()
+  const {push} = useRouter()
   const search = useSearch()
   const params = useParams()
   const pathname = usePathname()
@@ -107,6 +108,7 @@ export const Navigation: FC<INavigationProps> = () => {
 
   const handleCreate = () => {
     const promise = create({title: "Untitled"})
+      .then((documentId) => push(`/documents/${documentId}`))
 
     toast.promise(promise, {
       loading: "Kerla yoza deş du...",

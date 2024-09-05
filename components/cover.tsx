@@ -11,17 +11,18 @@ import {api} from "@/convex/_generated/api";
 import {useParams} from "next/navigation";
 import {Id} from "@/convex/_generated/dataModel";
 import {useEdgeStore} from "@/lib/edgestore";
+import {Skeleton} from "@/components/ui/skeleton";
 
 interface ICoverProps {
   url?: string
   preview?: boolean
 }
 
-export const Cover: FC<ICoverProps> = (
+export const Cover = (
   {
     url,
     preview
-  }
+  }: ICoverProps
 ) => {
   const {edgestore} = useEdgeStore()
   const params = useParams()
@@ -77,3 +78,9 @@ export const Cover: FC<ICoverProps> = (
     </div>
   );
 };
+
+Cover.Skeleton = function CoverSkeleton() {
+  return (
+    <Skeleton className={"w-full h-[12vh]"}/>
+  )
+}
